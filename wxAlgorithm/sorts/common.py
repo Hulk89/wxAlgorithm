@@ -1,19 +1,23 @@
 import random
 
 import wx
+from wxAlgorithm.constants import PALLETES
 
 class ArrayPanel(wx.Panel):
     """array를 받아서 그림을 그려주는 panel."""
-    def __init__(self, parent, array):
+    def __init__(self, parent, array, colors):
         super().__init__(parent, wx.ID_ANY)
-        self.set(array, {})
+        self.set(array, colors)
 
         self.Bind(wx.EVT_SIZE, self.on_size)
         self.Bind(wx.EVT_PAINT, self.on_paint)
 
-    def set(self, array, color_dicts):
+    def set(self, array, colors):
         self.array = array
-        self.color_dicts = color_dicts
+        for color in colors:
+            if color not in PALLETES.keys():
+                raise ValueError("{} are not in PALLETES".format(color))
+        self.colors = colors
         self.Refresh()
 
     def on_size(self, event):
@@ -26,20 +30,17 @@ class ArrayPanel(wx.Panel):
         dc = wx.PaintDC(self)
         dc.SetBackground(wx.Brush('white'))
         dc.Clear()
+
         array = self.array
+        colors = self.colors
 
         max_val = max(array)
         el_width = canvas_w / len(array)
 
-        for i, el in enumerate(array):
+        for i, (el, color) in enumerate(zip(array, colors)):
             el_height = int(el / max_val * canvas_h)
+            dc.SetBrush(wx.Brush(PALLETES[color]))
 
-            for k, v in self.color_dicts.items():
-                if i in v:
-                    dc.SetBrush(wx.Brush(k))
-                    break
-            else:
-                dc.SetBrush(wx.Brush("#71dcf4"))
             dc.DrawRectangle(i * el_width,
                              canvas_h - el_height,
                              el_width,
@@ -51,7 +52,7 @@ class StepPanel(wx.Panel):
     def __init__(self, parent, num_elements=5):
         super().__init__(parent, wx.ID_ANY)
         bSizer = wx.BoxSizer(wx.VERTICAL)
-        self.panel = ArrayPanel(self, [])
+        self.panel = ArrayPanel(self, [], [])
         bSizer.Add(self.panel, 1, wx.EXPAND| wx.ALL)
 
         hSizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -81,8 +82,8 @@ class StepPanel(wx.Panel):
         random.shuffle(self.array)
 
         self.step_gen = self.step_generator()
-        self.color_dicts = {}
-        self.panel.set(self.array, self.color_dicts)
+        self.colors = ['default' for _ in self.array]
+        self.panel.set(self.array, self.colors)
         self.next.Enable()
 
     def step_generator(self):
@@ -93,8 +94,9 @@ class StepPanel(wx.Panel):
 
     def on_next_clicked(self, event):
         try:
+            self.colors = ['default' for _ in self.array]
             next(self.step_gen)
-            self.panel.set(self.array, self.color_dicts)
+            self.panel.set(self.array, self.colors)
         except StopIteration:
-            self.panel.set(self.array, {'#333333': range(len(self.array))})
+            self.panel.set(self.array, ['disabled' for _ in self.array])
             self.next.Disable()
