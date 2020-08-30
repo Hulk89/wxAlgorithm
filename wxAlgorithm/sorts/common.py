@@ -48,12 +48,10 @@ class ArrayPanel(wx.Panel):
 
 class StepPanel(wx.Panel):
     """step, reset button을 추가한 panel"""
-    def __init__(self, parent):
+    def __init__(self, parent, num_elements=5):
         super().__init__(parent, wx.ID_ANY)
-        self.init_array()
-
         bSizer = wx.BoxSizer(wx.VERTICAL)
-        self.panel = ArrayPanel(self, self.array)
+        self.panel = ArrayPanel(self, [])
         bSizer.Add(self.panel, 1, wx.EXPAND| wx.ALL)
 
         hSizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -69,21 +67,29 @@ class StepPanel(wx.Panel):
 
         self.reset.Bind(wx.EVT_BUTTON, self.on_reset_clicked)
         self.next.Bind(wx.EVT_BUTTON, self.on_next_clicked)
+        
+        # not GUI
+        self.num_elements = num_elements
+        self.reset_data()
 
-    def init_array(self):
-        self.array = [i + 1 for i in range(10)]
+    def set_num_elements(self, num_elements):
+        self.num_elements = num_elements
+        self.reset_data()
+
+    def reset_data(self):
+        self.array = [i + 1 for i in range(self.num_elements)]
         random.shuffle(self.array)
 
         self.step_gen = self.step_generator()
         self.color_dicts = {}
+        self.panel.set(self.array, self.color_dicts)
+        self.next.Enable()
 
     def step_generator(self):
         raise NotImplementedError
     
     def on_reset_clicked(self, event):
-        self.init_array()
-        self.panel.set(self.array, self.color_dicts)
-        self.next.Enable()
+        self.reset_data()
 
     def on_next_clicked(self, event):
         try:

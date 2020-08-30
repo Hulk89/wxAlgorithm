@@ -27,10 +27,20 @@ class MyFrame(wx.Frame):
         super().__init__(parent, wx.ID_ANY, "wxPython")
         bSizer = wx.BoxSizer(wx.VERTICAL)
         self.panel = BubblePanel(self)
-        bSizer.Add(self.panel, 1, wx.EXPAND| wx.ALL)
+        bSizer.Add(self.panel, 1, wx.EXPAND|wx.ALL)
+        
+        slider = wx.Slider(self, wx.ID_ANY, 5, 2, 10)
+        bSizer.Add(slider, 0, wx.EXPAND|wx.ALL)
+
         self.SetSizer(bSizer)
         self.Layout()
+        slider.Bind(wx.EVT_SLIDER, self.on_slide)
 
+    def on_slide(self, event):
+        obj = event.GetEventObject()
+        value = obj.GetValue()
+        if self.panel.num_elements != value:
+            self.panel.set_num_elements(value)
 app = wx.App(False)
 frame = MyFrame(None)
 frame.Show(True)
