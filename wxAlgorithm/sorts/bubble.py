@@ -22,8 +22,8 @@ class BubblePanel(StepPanel):
 
                 if self.array[j] > self.array[j + 1]:
                     self.array[j], self.array[j + 1] = self.array[j + 1], self.array[j]
-                    self.colors[j] = 'key'
-                    self.colors[j+1] = 'candidate'
+                    self.colors[j+1] = 'key'
+                    self.colors[j] = 'candidate'
 
                 else:
                     self.colors[j] = self.colors[j+1] = 'candidate'
