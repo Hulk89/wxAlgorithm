@@ -28,7 +28,7 @@ class ArrayPanel(wx.Panel):
         canvas_w, canvas_h = self.GetClientSize()
 
         dc = wx.PaintDC(self)
-        dc.SetBackground(wx.Brush('white'))
+        #dc.SetBackground(wx.Brush('white'))
         dc.Clear()
 
         array = self.array
@@ -38,7 +38,7 @@ class ArrayPanel(wx.Panel):
         el_width = canvas_w / len(array)
 
         for i, (el, color) in enumerate(zip(array, colors)):
-            el_height = int(el / max_val * canvas_h)
+            el_height = (el / max_val * canvas_h)
             dc.SetBrush(wx.Brush(PALLETES[color]))
 
             dc.DrawRectangle(i * el_width,
