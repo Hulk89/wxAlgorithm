@@ -87,6 +87,11 @@ class StepPanel(wx.Panel):
         self.next.Enable()
 
     def step_generator(self):
+        """self.array, self.colors를 바꾸는 함수. 
+        
+        yield 후 self.colors가 초기화되기 때문에, 바꾸고싶은 color만 바꾸면 된다.
+
+        """
         raise NotImplementedError
     
     def on_reset_clicked(self, event):
