@@ -1,11 +1,13 @@
 import wx
 from wxAlgorithm.sorts.bubble import BubblePanel
+from wxAlgorithm.sorts.quick import QuickPanel
 from wxAlgorithm.navi_frame import NavigationFrame
 from wxAlgorithm.list_panel import ListPanel
 
 
 lists = [
-    ('BubbleSort', BubblePanel)
+    ('BubbleSort', BubblePanel),
+    ('QuickSort', QuickPanel)
 ]
 
 
