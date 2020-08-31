@@ -1,5 +1,3 @@
-import random
-import wx
 from wxAlgorithm.sorts.common import StepPanel
 from wxAlgorithm.constants import PALLETES
 
@@ -12,7 +10,7 @@ class QuickPanel(StepPanel):
     def quick(self, left, right):
         self.disable_outrange(left, right)
         if right - left == 0:
-            yield
+            pass
         elif right - left == 1:
             self.colors[left] = 'key'
             yield
