@@ -7,7 +7,6 @@ from wxAlgorithm.constants import PALLETES
 class BubblePanel(StepPanel):
     def step_generator(self):
         for i in range(len(self.array) - 1, 0, -1):
-            gray = list(range(i+1, len(self.array)))
             for j in range(i):
                 # color before step
                 for k in range(i+1, len(self.array)):
@@ -29,5 +28,4 @@ class BubblePanel(StepPanel):
                     self.colors[j] = self.colors[j+1] = 'candidate'
 
                 yield
-
 

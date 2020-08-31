@@ -28,7 +28,6 @@ class ArrayPanel(wx.Panel):
         canvas_w, canvas_h = self.GetClientSize()
 
         dc = wx.PaintDC(self)
-        #dc.SetBackground(wx.Brush('white'))
         dc.Clear()
 
         array = self.array
@@ -48,7 +47,7 @@ class ArrayPanel(wx.Panel):
 
 
 class StepPanel(wx.Panel):
-    """step, reset button을 추가한 panel"""
+    """Array view를 가지며 step button, reset button, slide를 추가한 panel"""
     def __init__(self, parent, num_elements=5):
         super().__init__(parent, wx.ID_ANY)
         bSizer = wx.BoxSizer(wx.VERTICAL)
@@ -63,15 +62,31 @@ class StepPanel(wx.Panel):
         hSizer.Add(self.reset, 1, wx.EXPAND)
         bSizer.Add(hSizer, 0, wx.EXPAND|wx.ALL)
 
+        hSizer2 = wx.BoxSizer(wx.HORIZONTAL)
+        self.statictext = wx.StaticText(self, wx.ID_ANY, "#elements: 5", style=wx.ALIGN_CENTER)
+        hSizer2.Add(self.statictext, 1, wx.EXPAND|wx.ALL)
+        slider = wx.Slider(self, wx.ID_ANY, 5, 2, 10)
+        hSizer2.Add(slider, 3, wx.EXPAND|wx.ALL)
+        bSizer.Add(hSizer2, 0, wx.EXPAND|wx.ALL)
+
         self.SetSizer(bSizer)
         self.Layout()
 
         self.reset.Bind(wx.EVT_BUTTON, self.on_reset_clicked)
         self.next.Bind(wx.EVT_BUTTON, self.on_next_clicked)
+        slider.Bind(wx.EVT_SLIDER, self.on_slide)
         
         # not GUI
         self.num_elements = num_elements
         self.reset_data()
+
+    def on_slide(self, event):
+        obj = event.GetEventObject()
+        value = obj.GetValue()
+        if self.num_elements != value:
+            self.set_num_elements(value)
+            self.statictext.SetLabel("#elements: {}".format(value))
+            self.Layout()
 
     def set_num_elements(self, num_elements):
         self.num_elements = num_elements
@@ -98,6 +113,9 @@ class StepPanel(wx.Panel):
         self.reset_data()
 
     def on_next_clicked(self, event):
+        """array의 모든 color를 default로 초기화 시키고, step_gen을 한번 호출한다.
+
+        """
         try:
             self.colors = ['default' for _ in self.array]
             next(self.step_gen)
